@@ -34,7 +34,9 @@ response_schema = Schema([
                 'synonyms': [str],
                 'antonyms': [str]
             }
-        ]
+        ],
+        Optional('license'): dict,
+        Optional('sourceUrls'): list
     }
 ])
 
