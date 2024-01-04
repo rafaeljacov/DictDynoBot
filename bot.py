@@ -7,7 +7,6 @@ from telegram.ext import MessageHandler, filters, CommandHandler, Application
 
 load_dotenv()
 
-API = os.getenv('API')
 TOKEN = os.getenv('TOKEN')
 
 
