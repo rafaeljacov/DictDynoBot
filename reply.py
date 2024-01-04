@@ -11,7 +11,7 @@ Key Features:
 
 🔀 Antonym Adventure: Seek the opposite meaning by trying /antonym <word>, perfect for diversifying your word choices.
 
-🔎 Full-Text Search: Conduct comprehensive searches across our extensive database by using /search <query>. Whether you're looking for specific terms or exploring broad topics, DictDynoBot has you covered.
+🔎 Full-Word Search: Conduct comprehensive searches across our extensive database by using /search <word>. Whether you're looking for specific terms or exploring broad topics, DictDynoBot has you covered.
 
 DictDynoBot is your go-to language companion, making learning and exploring the English language an engaging experience. Start your word journey now! 🌐📖
                             ''',
@@ -26,8 +26,17 @@ Here's how I can assist you:
 
 3️⃣ Antonym Hunt: Try /antonym <word> to find antonyms and expand your vocabulary.
 
-4️⃣ull-Text Search: Conduct comprehensive searches across a vast word database by using /search <query>. Explore topics or find specific terms effortlessly!
+4️⃣ Full-Word Search: Conduct comprehensive searches across a vast word database by using /search <word>. Explore topics or find specific terms effortlessly!
 
 To get started, simply type one of the commands above. Happy exploring! 🌐🔍
+                              ''',
+    'no_definition': '''
+                              📚 **No Definitions Found**
+
+Sorry, I couldn't find any definitions for the provided word.
+
+Please check the spelling or try another word.
+
+You can try the search again at later time or head to the web instead.
                               '''
 }
