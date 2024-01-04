@@ -4,24 +4,26 @@ import json
 
 from telegram import Update
 from telegram.ext import ContextTypes
-from schema import Schema, And, Use, Optional
+from schema import Schema, Optional, SchemaUnexpectedTypeError
 
 
 response_schema = Schema([
     {
         'word': str,
-        'phonetic': str,
-        Optional('phonetics'): [
+        Optional('phonetic'): str,
+        'phonetics': [
             {
                 Optional('text'): str,
                 Optional('audio'): str,
                 Optional('sourceUrl'): str,
-                Optional('license'): dict,
+                Optional('license'): {
+                    'name': str,
+                    'url': str
+                },
             }
         ],
         'meanings': [
             {
-
                 'partOfSpeech': str,
                 'definitions': [
                     {
@@ -35,8 +37,11 @@ response_schema = Schema([
                 'antonyms': [str]
             }
         ],
-        Optional('license'): dict,
-        Optional('sourceUrls'): list
+        'license': {
+            'name': str,
+            'url': str
+        },
+        'sourceUrls': [str]
     }
 ])
 
@@ -52,9 +57,14 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def define(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # text = ' '.join(context.args).strip()
-    text = "mark"
+    text = ' '.join(context.args).strip()
     response = requests.get(API + text)
 
     # Parse json response
-    data = json.loads(response)
+    parsed = json.loads(response.text)
+
+    # Validate data
+    try:
+        data = response_schema.validate(parsed)
+    except SchemaUnexpectedTypeError:  # No Definitions were found
+        await update.message.reply_text(replies['no_definition'])
