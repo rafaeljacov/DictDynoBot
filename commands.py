@@ -1,10 +1,19 @@
-from reply import replies
 import requests
 import json
 
-from telegram import Update
+from reply import replies
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from schema import Schema, Optional, SchemaUnexpectedTypeError
+
+
+# For /define command
+class Definition:
+    def __init__(self, audio, partOfSpeech, definition, example):
+        self.audio = audio
+        self.partOfSpeech = partOfSpeech
+        self.definition = definition
+        self.example = example
 
 
 response_schema = Schema([
@@ -66,5 +75,28 @@ async def define(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Validate data
     try:
         data = response_schema.validate(parsed)
+        definitions = []
+        audio = ''
+
+        for result in data:
+            for item in result['phonetics']:
+                if item['audio']:
+                    audio = item['audio']
+                    break
+
+            for meaning in result['meanings']:
+                partOfSpeech = meaning['partOfSpeech']
+                for item in meaning['definitions']:
+                    # Initialize example if it exists in the dictionary
+                    example = item['example'] if 'example' in item else ''
+
+                    definitions.append(
+                        Definition(
+                            audio,
+                            partOfSpeech,
+                            item['definition'],
+                            example
+                        ))
+
     except SchemaUnexpectedTypeError:  # No Definitions were found
         await update.message.reply_text(replies['no_definition'])
