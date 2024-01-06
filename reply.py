@@ -11,8 +11,6 @@ Key Features:
 
 🔀 Antonym Adventure: Seek the opposite meaning by trying /antonym <word>, perfect for diversifying your word choices.
 
-🔎 Full-Word Search: Conduct comprehensive searches across our extensive database by using /search <word>. Whether you're looking for specific terms or exploring broad topics, DictDynoBot has you covered.
-
 DictDynoBot is your go-to language companion, making learning and exploring the English language an engaging experience. Start your word journey now! 🌐📖
                             ''',
     'help': '''
@@ -25,8 +23,6 @@ Here's how I can assist you:
 2️⃣ Thesaurus Mode: Use /synonym <word> to explore synonyms for a chosen word.
 
 3️⃣ Antonym Hunt: Try /antonym <word> to find antonyms and expand your vocabulary.
-
-4️⃣ Full-Word Search: Conduct comprehensive searches across a vast word database by using /search <word>. Explore topics or find specific terms effortlessly!
 
 To get started, simply type one of the commands above. Happy exploring! 🌐🔍
                               ''',
