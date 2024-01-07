@@ -97,6 +97,18 @@ async def define(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                             item['definition'],
                             example
                         ))
+        # Store to context
+        context.user_data['definitions'] = definitions
+
+        reply_markup = InlineKeyboardMarkup.from_button(
+            InlineKeyboardButton("Next Definition", callback_data="next"))
+
+        # Reply Message
+        reply = f'<b>{text.capitalize()}:</b>\t\t'
+        reply += f'<i>{definitions[0].partOfSpeech}</i>\n'
+        reply += f'\n<blockquote>{definitions[0].definition}</blockquote>'
+
+        await update.message.reply_html(reply, reply_markup=None)
 
     except SchemaUnexpectedTypeError:  # No Definitions were found
         await update.message.reply_text(replies['no_definition'])
