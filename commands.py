@@ -121,7 +121,7 @@ async def define(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     reply += f'\n<blockquote>{context.user_data[text][0].definition}</blockquote>'
 
     if context.user_data[text][0].example:
-        reply += f'Example: <i>{context.user_data["text"][0].example}</i>\n'
+        reply += f'Example: <i>{context.user_data[text][0].example}</i>\n'
 
     reply += f'\n\n<i>1 of {len(context.user_data[text])}</i>'
 
