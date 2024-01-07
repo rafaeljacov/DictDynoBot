@@ -66,6 +66,11 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def define(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    # Check if there is no word to define
+    if not context.args:
+        await update.message.reply_text('Please give me a word to define.')
+        return None
+
     text = ' '.join(context.args).strip()
     response = requests.get(API + text)
 
