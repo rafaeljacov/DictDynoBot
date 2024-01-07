@@ -77,43 +77,45 @@ async def define(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Parse json response
     parsed = json.loads(response.text)
 
-    # Validate data
-    try:
-        data = response_schema.validate(parsed)
-        definitions = []
-        audio = ''
+    if text not in context.user_data:
+        # Validate data
+        try:
+            data = response_schema.validate(parsed)
+            audio = ''
+            definitions = []
 
-        for result in data:
-            for item in result['phonetics']:
-                if item['audio']:
-                    audio = item['audio']
-                    break
+            for result in data:
+                for item in result['phonetics']:
+                    if item['audio']:
+                        audio = item['audio']
+                        break
 
-            for meaning in result['meanings']:
-                partOfSpeech = meaning['partOfSpeech']
-                for item in meaning['definitions']:
-                    # Initialize example if it exists in the dictionary
-                    example = item['example'] if 'example' in item else ''
+                for meaning in result['meanings']:
+                    partOfSpeech = meaning['partOfSpeech']
+                    for item in meaning['definitions']:
+                        # Initialize example if it exists in the dictionary
+                        example = item['example'] if 'example' in item else ''
 
-                    definitions.append(
-                        Definition(
-                            audio,
-                            partOfSpeech,
-                            item['definition'],
-                            example
-                        ))
-        # Store to context
-        context.user_data['definitions'] = definitions
+                        definitions.append(
+                            Definition(
+                                audio,
+                                partOfSpeech,
+                                item['definition'],
+                                example
+                            ))
+            # Store to context
+            context.user_data[text] = definitions
 
-        reply_markup = InlineKeyboardMarkup.from_button(
-            InlineKeyboardButton("Next Definition", callback_data="next"))
+        except SchemaUnexpectedTypeError:  # No Definitions were found
+            await update.message.reply_text(replies['no_definition'])
+            return None
 
-        # Reply Message
-        reply = f'<b>{text.capitalize()}:</b>\t\t'
-        reply += f'<i>{definitions[0].partOfSpeech}</i>\n'
-        reply += f'\n<blockquote>{definitions[0].definition}</blockquote>'
+    reply_markup = InlineKeyboardMarkup.from_button(
+        InlineKeyboardButton('Next Definition', callback_data='next'))
 
-        await update.message.reply_html(reply, reply_markup=None)
+    # Reply Message
+    reply = f'<b>{text.capitalize()}:</b>\t\t'
+    reply += f'<i>{context.user_data[text][0].partOfSpeech}</i>\n'
+    reply += f'\n<blockquote>{context.user_data[text][0].definition}</blockquote>'
 
-    except SchemaUnexpectedTypeError:  # No Definitions were found
-        await update.message.reply_text(replies['no_definition'])
+    await update.message.reply_html(reply, reply_markup=None)
