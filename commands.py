@@ -111,11 +111,58 @@ async def define(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             return None
 
     reply_markup = InlineKeyboardMarkup.from_button(
-        InlineKeyboardButton('Next Definition', callback_data='next'))
+        InlineKeyboardButton('Next Definition',
+                             # State for text, index, and action
+                             callback_data=f'{text} 0 next'))
 
     # Reply Message
     reply = f'<b>{text.capitalize()}:</b>\t\t'
     reply += f'<i>{context.user_data[text][0].partOfSpeech}</i>\n'
     reply += f'\n<blockquote>{context.user_data[text][0].definition}</blockquote>'
 
-    await update.message.reply_html(reply, reply_markup=None)
+    if context.user_data[text][0].example:
+        reply += f'Example: <i>{context.user_data["text"][0].example}</i>\n'
+
+    reply += f'\n\n<i>1 of {len(context.user_data[text])}</i>'
+
+    await update.message.reply_html(reply, reply_markup=reply_markup)
+
+
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    text, index, action = query.data.split()
+    index = int(index)
+
+    if action == 'prev':
+        if index == 0:
+            index = len(context.user_data[text]) - 1
+        else:
+            index -= 1
+    elif action == 'next':
+        if index == len(context.user_data[text]) - 1:
+            index = 0
+        else:
+            index += 1
+
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                'Prev Definition', callback_data=f'{text} {index} prev'),
+            InlineKeyboardButton(
+                'Next Definition', callback_data=f'{text} {index} next')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    # Reply Message
+    reply = f'<b>{text.capitalize()}:</b>\t\t'
+    reply += f'<i>{context.user_data[text][index].partOfSpeech}</i>\n'
+    reply += f'\n<blockquote>{context.user_data[text][index].definition}</blockquote>'
+
+    if context.user_data[text][index].example:
+        reply += f'\n\nExample: <i>{context.user_data[text][index].example}</i>\n'
+
+    reply += f'\n\n<b><i>{index + 1} of {len(context.user_data[text])}</i></b>'
+
+    await query.edit_message_text(reply, reply_markup=reply_markup, parse_mode='HTML')
