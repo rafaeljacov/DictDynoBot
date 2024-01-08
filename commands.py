@@ -109,11 +109,14 @@ async def define(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         except SchemaUnexpectedTypeError:  # No Definitions were found
             await update.message.reply_text(replies['no_definition'])
             return None
-
-    reply_markup = InlineKeyboardMarkup.from_button(
-        InlineKeyboardButton('Next Definition',
-                             # State for text, index, and action
-                             callback_data=f'{text} 0 next'))
+    # Check if there is only one definition
+    if len(context.user_data[text]) == 1:
+        reply_markup = None
+    else:
+        reply_markup = InlineKeyboardMarkup.from_button(
+            InlineKeyboardButton('Next Definition',
+                                 # State for text, index, and action
+                                 callback_data=f'{text} 0 next'))
 
     # Reply Message
     reply = f'<b>{text.capitalize()}:</b>\t\t'
