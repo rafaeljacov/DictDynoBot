@@ -213,6 +213,8 @@ async def synonym(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def antonym(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    '''Just copied the synonym function and changed every occurence of "synonym" to "antonym"'''
+
     # Check if there is no word to define
     if not context.args:
         await update.message.reply_text('Please give me a word to search.')
