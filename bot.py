@@ -1,7 +1,7 @@
 import os
 import logging
 
-from commands import start, help, define, button
+from commands import start, help, define, button, synonym, antonym
 from dotenv import load_dotenv
 from telegram.ext import (
     CommandHandler,
@@ -27,6 +27,8 @@ def main():
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('help', help))
     application.add_handler(CommandHandler('define', define))
+    application.add_handler(CommandHandler('synonym', synonym))
+    application.add_handler(CommandHandler('antonym', antonym))
 
     application.add_handler(CallbackQueryHandler(button))
 

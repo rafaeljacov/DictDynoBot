@@ -169,3 +169,85 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply += f'\n\n<b><i>{index + 1} of {len(context.user_data[text])}</i></b>'
 
     await query.edit_message_text(reply, reply_markup=reply_markup, parse_mode='HTML')
+
+
+async def synonym(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Check if there is no word to define
+    if not context.args:
+        await update.message.reply_text('Please give me a word to search.')
+        return None
+
+    text = ' '.join(context.args).strip()
+    response = requests.get(API + text)
+
+    # Parse json response
+    parsed = json.loads(response.text)
+
+    if f'synonyms_{text}' not in context.user_data:
+        try:
+            data = response_schema.validate(parsed)
+            # Initialize empty list
+            context.user_data[f'synonyms_{text}'] = []
+
+            for result in data:
+                for meaning in result['meanings']:
+                    context.user_data[f'synonyms_{text}'].extend(
+                        meaning['synonyms'])
+
+        except SchemaUnexpectedTypeError:
+            await update.message.reply_html(f'Sorry, I did not find any synonym result for the word: <b>{text.capitalize()}</b>. 😔')
+            return None
+
+    # Check if synonyms is not empty
+    if context.user_data[f'synonyms_{text}']:
+        reply = (
+            f'<b>Synonyms for {text.capitalize()}:</b>\n'
+            + '\n'.join([f'• {word}' for word in
+                         context.user_data[f'synonyms_{text}']
+                         ])
+        )
+        await update.message.reply_html(reply)
+
+    else:
+        await update.message.reply_html(f'Sorry, I did not find any synonym result for the word: <b>{text.capitalize()}</b>. 😔')
+
+
+async def antonym(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Check if there is no word to define
+    if not context.args:
+        await update.message.reply_text('Please give me a word to search.')
+        return None
+
+    text = ' '.join(context.args).strip()
+    response = requests.get(API + text)
+
+    # Parse json response
+    parsed = json.loads(response.text)
+
+    if f'antonyms_{text}' not in context.user_data:
+        try:
+            data = response_schema.validate(parsed)
+            # Initialize empty list
+            context.user_data[f'antonyms_{text}'] = []
+
+            for result in data:
+                for meaning in result['meanings']:
+                    context.user_data[f'antonyms_{text}'].extend(
+                        meaning['antonyms'])
+
+        except SchemaUnexpectedTypeError:
+            await update.message.reply_html(f'Sorry, I did not find any antonym result for the word: <b>{text.capitalize()}</b>. 😔')
+            return None
+
+    # Check if antonyms is not empty
+    if context.user_data[f'antonyms_{text}']:
+        reply = (
+            f'<b>Synonyms for {text.capitalize()}:</b>\n'
+            + '\n'.join([f'• {word}' for word in
+                         context.user_data[f'antonyms_{text}']
+                         ])
+        )
+        await update.message.reply_html(reply)
+
+    else:
+        await update.message.reply_html(f'Sorry, I did not find any antonym result for the word: <b>{text.capitalize()}</b>. 😔')
