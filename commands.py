@@ -195,21 +195,21 @@ async def synonym(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         meaning['synonyms'])
 
         except SchemaUnexpectedTypeError:
-            await update.message.reply_html(f'Sorry, I did not find any synonym result for the word: <b>{text.capitalize()}</b>. 😔')
+            await update.message.reply_html(f'Sorry, I did not find any synonym result for the word: <b><i>{text}</i></b>. 😔')
             return None
 
     # Check if synonyms is not empty
     if context.user_data[f'synonyms_{text}']:
         reply = (
-            f'<b>Synonyms for {text.capitalize()}:</b>\n'
-            + '\n'.join([f'• {word}' for word in
-                         context.user_data[f'synonyms_{text}']
-                         ])
+            f'Synonyms for <b><i>"{text}"</i></b>:\n'
+            + '\n'.join(f'• {word}' for word in
+                        context.user_data[f'synonyms_{text}']
+                        )
         )
         await update.message.reply_html(reply)
 
     else:
-        await update.message.reply_html(f'Sorry, I did not find any synonym result for the word: <b>{text.capitalize()}</b>. 😔')
+        await update.message.reply_html(f'Sorry, I did not find any synonym result for the word: <b><i>{text}</i></b>. 😔')
 
 
 async def antonym(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -238,13 +238,13 @@ async def antonym(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         meaning['antonyms'])
 
         except SchemaUnexpectedTypeError:
-            await update.message.reply_html(f'Sorry, I did not find any antonym result for the word: <b>{text.capitalize()}</b>. 😔')
+            await update.message.reply_html(f'Sorry, I did not find any antonym result for the word: <b><i>{text}</i></b>. 😔')
             return None
 
     # Check if antonyms is not empty
     if context.user_data[f'antonyms_{text}']:
         reply = (
-            f'<b>Synonyms for {text.capitalize()}:</b>\n'
+            f'Antonyms for <b><i>"{text}"</i></b>:\n'
             + '\n'.join([f'• {word}' for word in
                          context.user_data[f'antonyms_{text}']
                          ])
@@ -252,4 +252,4 @@ async def antonym(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_html(reply)
 
     else:
-        await update.message.reply_html(f'Sorry, I did not find any antonym result for the word: <b>{text.capitalize()}</b>. 😔')
+        await update.message.reply_html(f'Sorry, I did not find any antonym result for the word: <b><i>{text}</i></b>. 😔')
